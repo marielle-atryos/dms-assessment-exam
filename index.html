@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Marketing Assistant (Full-Stack) — Applicant Assessment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #176d8c; --teal-dark: #124f66; --teal-light: #e8f3f6;
+    --ink: #1f2a30; --muted: #5b6b72; --border: #dbe6ea;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Poppins', sans-serif; background: #f4f8f9; color: var(--ink); padding: 32px 16px 80px; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  .header { background: var(--teal); color: #fff; border-radius: 14px; padding: 32px 28px; margin-bottom: 24px; }
+  .header h1 { margin: 0 0 8px; font-size: 22px; font-weight: 600; }
+  .header p { margin: 0; opacity: .9; font-size: 14px; line-height: 1.5; }
+  .card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 18px; }
+  .applicant-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 560px) { .applicant-grid { grid-template-columns: 1fr; } }
+  label { display: block; font-weight: 600; font-size: 13px; color: var(--teal-dark); margin-bottom: 6px; }
+  input[type="text"], input[type="email"] {
+    width: 100%; font-family: 'Poppins', sans-serif; font-size: 14px; padding: 10px 12px;
+    border: 1px solid var(--border); border-radius: 8px; background: #fbfdfd; color: var(--ink);
+  }
+  input:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-light); }
+  .q-num { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px;
+    border-radius: 50%; background: var(--teal-light); color: var(--teal-dark); font-size: 13px; font-weight: 700; margin-right: 8px; flex-shrink: 0; }
+  .q-title { display: flex; align-items: flex-start; margin-bottom: 10px; }
+  .q-title label { margin-bottom: 0; }
+  .q-context { background: var(--teal-light); border-left: 3px solid var(--teal); border-radius: 6px;
+    padding: 10px 14px; font-size: 13px; color: var(--muted); margin: 8px 0 12px 34px; line-height: 1.5; }
+  .required { color: #c0392b; margin-left: 3px; }
+  .submit-row { text-align: center; margin-top: 8px; }
+  button { font-family: 'Poppins', sans-serif; background: var(--teal); color: #fff; border: none;
+    padding: 14px 40px; font-size: 15px; font-weight: 600; border-radius: 10px; cursor: pointer; transition: background .15s ease; }
+  button:hover { background: var(--teal-dark); }
+  button:disabled { opacity: .6; cursor: not-allowed; }
+  .status { text-align: center; font-size: 13px; margin-top: 12px; color: var(--muted); }
+  .success-screen { text-align: center; padding: 60px 28px; }
+  .success-screen h2 { color: var(--teal-dark); margin-bottom: 10px; }
+  .success-screen p { color: var(--muted); }
+  #surveyForm.hidden, .success-screen.hidden { display: none; }
+  .section-divider { margin: 32px 0 18px; display: flex; align-items: center; gap: 12px; }
+  .section-divider span { font-size: 13px; font-weight: 700; color: var(--teal-dark); text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; }
+  .section-divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .select-hint { font-size: 12px; font-weight: 600; color: var(--muted); margin: 8px 0 12px 34px; text-transform: uppercase; letter-spacing: .03em; }
+  .option-list { display: flex; flex-direction: column; gap: 10px; margin-left: 34px; }
+  .option { display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 16px; cursor: pointer; font-size: 14px; transition: border-color .15s ease, background .15s ease; }
+  .option:hover { border-color: var(--teal); background: var(--teal-light); }
+  .option input { flex-shrink: 0; width: 17px; height: 17px; accent-color: var(--teal); }
+  .option span.opt-text { line-height: 1.4; }
+  .swatches { display: flex; gap: 12px; flex-wrap: wrap; margin: 6px 0 18px 34px; }
+  .swatch { display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
+  .swatch .chip { width: 48px; height: 48px; border-radius: 8px; border: 1px solid var(--border); }
+  .ref-img { max-width: 220px; display: block; margin: 6px 0 16px 34px; border: 1px solid var(--border); border-radius: 10px; background: #fff; padding: 10px; }
+  input[type="file"] { margin-left: 34px; font-family: 'Poppins', sans-serif; font-size: 13px; }
+  textarea { width: calc(100% - 34px); margin-left: 34px; font-family: 'Poppins', sans-serif; font-size: 14px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: #fbfdfd; color: var(--ink); resize: vertical; min-height: 72px; }
+  textarea:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-light); }
+  .upload-label { display: block; font-weight: 600; font-size: 13px; color: var(--teal-dark); margin: 0 0 6px 34px; }
+  .section-divider { display: none; }
+  .card.step { display: none; }
+  .card.step.active { display: block; }
+  .honesty { display: flex; gap: 12px; align-items: flex-start; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-top: 16px; font-size: 14px; cursor: pointer; line-height: 1.45; }
+  .honesty input { width: 18px; height: 18px; accent-color: var(--teal); margin-top: 2px; flex-shrink: 0; }
+  .intro-note { font-size: 13px; color: var(--muted); background: var(--teal-light); border-radius: 8px; padding: 12px 14px; margin-bottom: 18px; line-height: 1.55; }
+  #controlBar { position: sticky; bottom: 0; background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 14px 18px; margin-top: 18px; box-shadow: 0 -2px 12px rgba(0,0,0,0.05); display: none; }
+  #controlBar.show { display: block; }
+  .cb-inner { max-width: 760px; margin: 0 auto; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .cb-progress { font-size: 13px; font-weight: 600; color: var(--teal-dark); white-space: nowrap; }
+  .timer-track { flex: 1; height: 6px; background: var(--teal-light); border-radius: 3px; overflow: hidden; min-width: 100px; }
+  .timer-fill { height: 100%; background: var(--teal); width: 100%; transition: width 1s linear; }
+  .timer-fill.low { background: #c0392b; }
+  .cb-timer { font-size: 14px; font-weight: 700; color: var(--teal); min-width: 54px; text-align: center; }
+  .cb-timer.low { color: #c0392b; }
+  #controlBar button { padding: 11px 26px; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <h1>Digital Marketing Assistant (Full-Stack) — Applicant Assessment</h1>
+    <p>Thanks for applying to Atryos. This short assessment helps us understand how you think across the day-to-day of a full-stack marketing role in a multi-brand, multi-market e-commerce business — managing many storefronts and languages at once. It's mostly multiple choice, with one short practical task at the end, and should take about 30–40 minutes. Please answer on your own, without help. Read each scenario carefully — the obvious answer isn't always the best one.</p>
+  </div>
+
+  <form id="surveyForm">
+
+    <div class="card step active" id="step-intro">
+      <div class="intro-note">This is a <strong>timed test</strong>. Each question gives you <strong>80 seconds</strong> and then moves on automatically — you can't go back, so answer as you go. Please complete it <strong>on your own, without AI tools or outside help</strong>. (The final task, Q16, is untimed and AI is expected there.)</div>
+      <div class="applicant-grid">
+        <div>
+          <label for="name">Full Name <span class="required">*</span></label>
+          <input type="text" id="name" required>
+        </div>
+        <div>
+          <label for="email">Email Address <span class="required">*</span></label>
+          <input type="email" id="email" required>
+        </div>
+      </div>
+      <label class="honesty"><input type="checkbox" id="honesty"><span>I confirm I will complete this assessment on my own, <strong>without AI tools or outside help</strong> — except the final image task (Q16), where AI is expected.</span></label>
+      <div style="text-align:center; margin-top:18px;"><button type="button" id="startBtn">Start assessment</button></div>
+      <div class="status" id="introStatus"></div>
+    </div>
+
+    <div class="section-divider"><span>Marketing Reasoning &amp; Logic</span></div>
+
+    <div class="card step">
+      <div class="q-title"><span class="q-num">1</span><label>Where to spend one experiment <span class="required">*</span></label></div>
+      <div class="q-context">Across three UK shops, monthly traffic and conversion rates are: dog-tags shop 2.5% at 20,000 visits; keyrings shop 1.8% at 10,000 visits; the French store 3.0% at 5,000 visits. You can run one experiment expected to lift the chosen shop's conversion rate by 0.5 percentage points. Which shop delivers the most additional orders per month?</div>
+      <div class="select-hint">Select only one</div>
+      <div class="option-list">
+        <label class="option"><input type="radio" name="q1" value="A" required><span class="opt-text">The French store — it already has the highest conversion rate.</span></label>
+        <label class="option"><input type="radio" name="q1" value="B"><span class="opt-text">The keyrings shop.</span></label>
+        <label class="option"><input type="radio" name="q1" value="C"><span class="opt-text">The dog-tags shop — about +100 extra orders a month.</span></label>
+        <label class="option"><input type="radio" name="q1" value="D"><span class="opt-text">They would all gain the same number of orders.</span></label>
+      </div>
+    </div>
+
+    <div class="card step">
+      <div class="q-title"><span class="q-num">2</span><label>Keywords across markets <span class="required">*</span></label></div>
+      <div class="q-context">You're launching the same product on the UK, Irish, Australian, and French storefronts. What's the right approach to product keywords?</div>
+      <div class="select-hint">Select only one</div>
+      <div class="option-list">
+        <label class="option"><input type="radio" name="q2" value="A" required><span class="opt-text">Translate the UK keywords into each language.</span></label>
+        <label class="option"><input type="radio" name="q2" value="B"><span class="opt-text">Research keywords separately per market — search terms, spelling, and demand differ even between English-speaking markets.</span></label>
+        <label class="option"><input type="radio" name="q2" value="C"><span class="opt-text">Reuse the UK keywords everywhere since it's the same product.</span></label>
+        <label class="option"><input type="radio" name="q2" value="D"><span class="opt-text">Use the French keywords and auto-translate them into the other languages.</span></label>
+      </div>
+    </div>
+
+    <div class="card step">
+      <div class="q-title"><span class="q-num">3</span><label>A change across 40 shops <span class="required">*</span></label></div>
+      <div class="q-context">A price and a legal disclaimer must be updated on the same product across 40 storefronts before a sale tomorrow. What's the best approach?</div>
+      <div class="select-hint">Select only one</div>
+      <div class="option-list">
+        <label class="option"><input type="radio" name="q3" value="A" required><span class="opt-text">Edit all 40 shops manually, one by one, to be safe.</span></label>
+        <label class="option"><input type="radio" name="q3" value="B"><span class="opt-text">Update only the top-selling shops and leave the rest.</span></label>
+        <label class="option"><input type="radio" name="q3" value="C"><span class="opt-text">Launch the sale on time and fix prices as complaints come in.</span></label>
+        <label class="option"><input type="radio" name="q3" value="D"><span class="opt-text">Prepare a validated bulk import, test it on 1–2 shops first, roll it out, then spot-check.</span></label>
+      </div>
+    </div>
+
+    <div class="card step">
+      <div class="q-title"><span class="q-num">4</span><label>Reading a funnel drop <span class="required">*</span></label></div>
+      <div class="q-context">On one shop, a product page had 500 add-to-carts but only 20 purchases this week. Comparable pages on your other shops turn about 40% of add-to-carts into purchases. What's the most logical first thing to check?</div>
+      <div class="select-hint">Select only one</div>
+      <div class="option-list">
+        <label class="option"><input type="radio" name="q4" value="A" required><span class="opt-text">The checkout on that shop — shipping options, a broken discount code, or a payment step.</span></label>
+        <label class="option"><input type="radio" name="q4" value="B"><span class="opt-text">The product photography.</span></label>
+        <label class="option"><input type="radio" name="q4" value="C"><span class="opt-text">The social media captions.</span></label>
+        <label class="option"><input type="radio" name="q4" value="D"><span class="opt-text">Nothing — 20 purchases is a fine result.</span></label>
+      </div>
+    </div>
+
+    <div class="card step">
+      <div class="q-title"><span class="q-num">5</span><label>Monday-morning triage <span class="required">*</span></label></div>
+      <div class="q-context">Everything feels urgent: (1) the French store is showing an untranslated English checkout button; (2) an email campaign to 20 markets is scheduled to send in 30 minutes and contains a broken link; (3) next week's Instagram posts need scheduling; (4) your manager wants a report by end of day. What do you handle first?</div>
+      <div class="select-hint">Select only one</div>
+      <div class="option-list">
+        <label class="option"><input type="radio" name="q5" value="A" required><span class="opt-text">Fix the untranslated checkout button.</span></label>
+        <label class="option"><input type="radio" name="q5" value="B"><span class="opt-text">Schedule next week's Instagram posts.</span></label>
+        <label class="option"><input type="radio" name="q5" value="C"><span class="opt-text">Stop and fix the email before it sends to 20 markets — once it's out, you can't recall it.</span></label>
+        <label class="option"><input type="radio" name="q5" value="D"><span class="opt-text">Write the manager's report.</span></label>
+      </div>
+    </div>
+
+    <div class="card step">
+      <div class="q-title"><span class="q-num">6</span><label>Campaign maths <span class="required">*</span></label></div>
+      <div class="q-context">An email campaign goes to 50,000 subscribers. It gets a 30% open rate, and 4% of the people who opened it clicked a link. Roughly how many people clicked?</div>
+      <div class="select-hint">Select only one</div>
+      <div class="option-list">
+        <label class="option"><input type="radio" name="q6" value="A" required><span class="opt-text">2,000</span></label>
+        <label class="option"><input type="radio" name="q6" value="B"><span class="opt-text">600</span></label>
+        <label class="option"><input type="radio" name="q6" value="C"><span class="opt-text">6,000</span></label>
+        <label class="option"><input type="radio" name="q6" value="D"><span class="opt-text">60</span></label>
+      </div>
+    </div>
+
+    <div class="card step">
+      <div class="q-title"><span class="q-num">7</span><label>One offer, three brands <span class="required">*</span></label></div>
+      <div class="q-context">The three brands each have their own look and tone but sit under the same company. The same promotional offer needs to go live across all three. What's the best approach?</div>
+      <div class="select-hint">Select only one</div>
+      <div class="option-list">
+        <label class="option"><input type="radio" name="q7" value="A" required><span class="opt-text">Keep the offer and message consistent, but adapt each banner to that brand's own style and voice.</span></label>
+        <label class="option"><input type="radio" name="q7" value="B"><span class="opt-text">Design one identical banner and use it on all three brands.</span></label>
+        <label class="option"><input type="radio" name="q7" value="C"><span class="opt-text">Only run the promo on the biggest brand.</span></label>
+        <label class="option"><input type="radio" name="q7" value="D"><span class="opt-text">Let each shop invent its own unrelated promo.</span></label>
+      </div>
+    </div>
+
+    <div class="card step">
+      <div class="q-title"><span class="q-num">8</span><label>Trusting AI localisation <span class="required">*</span></label></div>
+      <div class="q-context">An AI-localised French description reads perfectly fluently, but it describes the product as "acier inoxydable" (stainless steel) when the item is actually aluminium. What does this tell you?</div>
+      <div class="select-hint">Select only one</div>
+      <div class="option-list">
+        <label class="option"><input type="radio" name="q8" value="A" required><span class="opt-text">It doesn't matter, because the text reads naturally.</span></label>
+        <label class="option"><input type="radio" name="q8" value="B"><span class="opt-text">Only a native speaker could ever have caught it.</span></label>
+        <label class="option"><input type="radio" name="q8" value="C"><span class="opt-text">It proves AI should never be used for localisation.</span></label>
+        <label class="option"><input type="radio" name="q8" value="D"><span class="opt-text">Fluent AI output can still be factually wrong — specs must be checked against the source, not just read for fluency.</span></label>
+      </div>
+    </div>
+
+    <div class="card step">
+      <div class="q-title"><span class="q-num">9</span><label>Scheduling across time zones <span class="required">*</span></label></div>
+      <div class="q-context">You want a post to go live at 8:00 PM UK time (GMT) for the UK audience. You work on Dubai time (GMT+3). What time is that in your local (Dubai) time?</div>
+      <div class="select-hint">Select only one</div>
+      <div class="option-list">
+        <label class="option"><input type="radio" name="q9" value="A" required><span class="opt-text">5:00 PM</span></label>
+        <label class="option"><input type="radio" name="q9" value="B"><span class="opt-text">11:00 PM</span></label>
+        <label class="option"><input type="radio" name="q9" value="C"><span class="opt-text">8:00 PM</span></label>
+        <label class="option"><input type="radio" name="q9" value="D"><span class="opt-text">12:00 AM</span></label>
+      </div>
+    </div>
+
+    <div class="card step">
+      <div class="q-title"><span class="q-num">10</span><label>The value of automating <span class="required">*</span></label></div>
+      <div class="q-context">A recurring monthly task takes 6 minutes per shop done by hand, across 100 storefronts. You build a bulk tool that does all 100 in about 20 minutes total. Roughly how much time does it save each month?</div>
+      <div class="select-hint">Select only one</div>
+      <div class="option-list">
+        <label class="option"><input type="radio" name="q10" value="A" required><span class="opt-text">About 1 hour</span></label>
+        <label class="option"><input type="radio" name="q10" value="B"><span class="opt-text">About 4 hours</span></label>
+        <label class="option"><input type="radio" name="q10" value="C"><span class="opt-text">About 9–10 hours</span></label>
+        <label class="option"><input type="radio" name="q10" value="D"><span class="opt-text">No real time saving</span></label>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>Problem Solving &amp; Time Management</span></div>
+
+    <div class="card step">
+      <div class="q-title"><span class="q-num">11</span><label>Work-rate problem <span class="required">*</span></label></div>
+      <div class="q-context">45 people in a certain company can work together to finish a project in 15 days. For a project of the same workload, the company decided to use 15 people. Assume all people have the same level of productivity.<br><br>In how many days can this project be completed?</div>
+      <div class="select-hint">Select only one</div>
+      <div class="option-list">
+        <label class="option"><input type="radio" name="q11" value="A" required><span class="opt-text">5 days</span></label>
+        <label class="option"><input type="radio" name="q11" value="B"><span class="opt-text">10 days</span></label>
+        <label class="option"><input type="radio" name="q11" value="C"><span class="opt-text">22.5 days</span></label>
+        <label class="option"><input type="radio" name="q11" value="D"><span class="opt-text">45 days</span></label>
+      </div>
+    </div>
+
+    <div class="card step">
+      <div class="q-title"><span class="q-num">12</span><label>Goal-setting at work <span class="required">*</span></label></div>
+      <div class="q-context">You're a mid-level professional at an audit department of a large company.<br><br>Who should ideally set your goals at work?</div>
+      <div class="select-hint">Select only one</div>
+      <div class="option-list">
+        <label class="option"><input type="radio" name="q12" value="A" required><span class="opt-text">The HR department; my goals are in my job description.</span></label>
+        <label class="option"><input type="radio" name="q12" value="B"><span class="opt-text">I set my own goals at work; I have that autonomy.</span></label>
+        <label class="option"><input type="radio" name="q12" value="C"><span class="opt-text">My manager and I compose my goals together.</span></label>
+        <label class="option"><input type="radio" name="q12" value="D"><span class="opt-text">My manager hands them out to me.</span></label>
+      </div>
+    </div>
+
+    <div class="card step">
+      <div class="q-title"><span class="q-num">13</span><label>Handling quick-response emails <span class="required">*</span></label></div>
+      <div class="q-context">You have a busy job and often run out of time to complete all your tasks. In particular, you must respond to some emails every day that typically only require a short and simple response, but you can't seem to get these done during your normal day.<br><br>How should you handle responding to these emails?</div>
+      <div class="select-hint">Select only one</div>
+      <div class="option-list">
+        <label class="option"><input type="radio" name="q13" value="A" required><span class="opt-text">Process these emails over your lunch break when you aren't working on other tasks.</span></label>
+        <label class="option"><input type="radio" name="q13" value="B"><span class="opt-text">Schedule some blocks of time during the day only for responding to these emails.</span></label>
+        <label class="option"><input type="radio" name="q13" value="C"><span class="opt-text">Multitask and reply to these emails during other meetings.</span></label>
+        <label class="option"><input type="radio" name="q13" value="D"><span class="opt-text">Process these emails first thing in the morning.</span></label>
+      </div>
+    </div>
+
+    <div class="card step">
+      <div class="q-title"><span class="q-num">14</span><label>Best time to process email <span class="required">*</span></label></div>
+      <div class="q-context">You're an IT project manager at a tech company. You use both email and Slack (a chat and collaboration app).<br><br>When is the best time to process your emails?</div>
+      <div class="select-hint">Select only one</div>
+      <div class="option-list">
+        <label class="option"><input type="radio" name="q14" value="A" required><span class="opt-text">All the time because you don't know what will be in there and need to respond as quickly as possible.</span></label>
+        <label class="option"><input type="radio" name="q14" value="B"><span class="opt-text">In the morning, when you have the most mental energy and sharpness.</span></label>
+        <label class="option"><input type="radio" name="q14" value="C"><span class="opt-text">At various moments in the day or week that you dedicate only to processing emails, depending on the required response time.</span></label>
+        <label class="option"><input type="radio" name="q14" value="D"><span class="opt-text">Once a week because emails are a distraction from your real work and more urgent communications aren't emails.</span></label>
+      </div>
+    </div>
+
+    <div class="card step">
+      <div class="q-title"><span class="q-num">15</span><label>Structuring a chaotic day <span class="required">*</span></label></div>
+      <div class="q-context">You work at a medium-sized company in an organizational environment that is quite busy and hectic. You've noticed that you have a hard time structuring your day. Your days seem quite chaotic; every morning feels derailed by a sudden inflow of emails, crises that need to be managed, or colleagues interrupting your work.<br><br>What are good strategies to deal with this?</div>
+      <div class="select-hint">Select all that apply</div>
+      <div class="option-list">
+        <label class="option"><input type="checkbox" name="q15" value="A"><span class="opt-text">Make a plan for the whole day and include some time for contingencies. That way, you'll have some extra time in your calendar to deal with incidents.</span></label>
+        <label class="option"><input type="checkbox" name="q15" value="B"><span class="opt-text">Accept that you work in a chaotic environment and that it makes no sense to make plans.</span></label>
+        <label class="option"><input type="checkbox" name="q15" value="C"><span class="opt-text">Establish a morning routine to deal with at least some of the more important tasks that you need to get done that day.</span></label>
+        <label class="option"><input type="checkbox" name="q15" value="D"><span class="opt-text">Ignore the chaos and make a big effort to shut all the distractions out of your direct environment, including your colleagues.</span></label>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>Practical Task — Product Image (AI)</span></div>
+
+    <div class="card step">
+      <div class="q-title"><span class="q-num">16</span><label>Show the dog tag on a dog <span class="required">*</span></label></div>
+      <div class="q-context">Below is one of our blank dog tags. Using any AI image tool you like, create a realistic image showing <strong>this exact dog tag worn by a dog</strong> — the kind of lifestyle shot we'd use on a product page or a social post. Aim for a look and feel that fits our brand palette shown below. Then upload your finished image.</div>
+      <img class="ref-img" src="data:image/jpeg;base64,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" alt="Blank bone dog tag to work from">
+      <div class="upload-label">Brand palette to work with</div>
+      <div class="swatches">
+        <div class="swatch"><span class="chip" style="background:#b9d74d;"></span>#b9d74d</div>
+        <div class="swatch"><span class="chip" style="background:#103a1e;"></span>#103a1e</div>
+        <div class="swatch"><span class="chip" style="background:#cd7a00;"></span>#cd7a00</div>
+        <div class="swatch"><span class="chip" style="background:#eff3e2;"></span>#eff3e2</div>
+        <div class="swatch"><span class="chip" style="background:#f39100;"></span>#f39100</div>
+      </div>
+      <label class="upload-label" for="practicalImage">Upload your image (JPG or PNG) <span class="required">*</span></label>
+      <input type="file" id="practicalImage" accept="image/*">
+      <div class="upload-label" style="margin-top:16px;">Which AI tool(s) and prompt(s) did you use? <span class="required">*</span></div>
+      <textarea id="aiPrompt" placeholder="Name the tool(s) and paste the prompt(s) you used."></textarea>
+    </div>
+
+    <div id="controlBar">
+      <div class="cb-inner">
+        <span class="cb-progress" id="cbProgress">Question 1 of 16</span>
+        <div class="timer-track" id="timerTrack"><div class="timer-fill" id="timerFill"></div></div>
+        <span class="cb-timer" id="cbTimer">1:20</span>
+        <button type="button" id="advanceBtn">Next</button>
+      </div>
+      <div class="status" id="statusMsg"></div>
+    </div>
+
+  </form>
+
+  <div class="success-screen hidden" id="successScreen">
+    <h2>Thank you!</h2>
+    <p>Your responses have been submitted. Our team will review them and be in touch regarding next steps.</p>
+  </div>
+
+</div>
+
+<script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbweI5734iXUhESzY_1xU7f3eJnotbpP-M2tpqGUXruNttoUJgAGIXBBUOPo5NL2nJLH4w/exec";
+  const PER_Q_SECONDS = 80;
+  const TIMED_FROM = 1, TIMED_TO = 15;
+
+  const form = document.getElementById('surveyForm');
+  const steps = Array.prototype.slice.call(document.querySelectorAll('#surveyForm .card.step'));
+  const controlBar = document.getElementById('controlBar');
+  const cbProgress = document.getElementById('cbProgress');
+  const cbTimer = document.getElementById('cbTimer');
+  const timerFill = document.getElementById('timerFill');
+  const timerTrack = document.getElementById('timerTrack');
+  const advanceBtn = document.getElementById('advanceBtn');
+  const statusMsg = document.getElementById('statusMsg');
+  const startBtn = document.getElementById('startBtn');
+  const introStatus = document.getElementById('introStatus');
+  const successScreen = document.getElementById('successScreen');
+
+  const totalQuestions = steps.length - 1;
+  let current = 0, timer = null, remaining = 0;
+  let startTime = null, tabSwitches = 0, hiddenStart = null, hiddenMs = 0;
+
+  form.addEventListener('submit', function(e){ e.preventDefault(); });
+
+  function fmt(s){ var m = Math.floor(s/60), x = s%60; return m + ':' + (x<10?'0':'') + x; }
+
+  function showStep(i){
+    steps.forEach(function(el, idx){ el.classList.toggle('active', idx === i); });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (i === 0){ controlBar.classList.remove('show'); return; }
+    controlBar.classList.add('show');
+    cbProgress.textContent = 'Question ' + i + ' of ' + totalQuestions;
+    if (i >= TIMED_FROM && i <= TIMED_TO){
+      timerTrack.style.visibility = 'visible';
+      cbTimer.style.visibility = 'visible';
+      advanceBtn.textContent = 'Next';
+      startTimer();
+    } else {
+      stopTimer();
+      timerTrack.style.visibility = 'hidden';
+      cbTimer.style.visibility = 'hidden';
+      advanceBtn.textContent = 'Submit assessment';
+    }
+  }
+
+  function startTimer(){
+    stopTimer();
+    remaining = PER_Q_SECONDS;
+    updateTimerUI();
+    timer = setInterval(function(){
+      remaining--; updateTimerUI();
+      if (remaining <= 0){ stopTimer(); advance(); }
+    }, 1000);
+  }
+  function stopTimer(){ if (timer){ clearInterval(timer); timer = null; } }
+  function updateTimerUI(){
+    cbTimer.textContent = fmt(Math.max(0, remaining));
+    timerFill.style.width = (Math.max(0, remaining) / PER_Q_SECONDS * 100) + '%';
+    var low = remaining <= 10;
+    cbTimer.classList.toggle('low', low);
+    timerFill.classList.toggle('low', low);
+  }
+
+  function advance(){ stopTimer(); if (current < steps.length - 1){ current++; showStep(current); } }
+
+  advanceBtn.addEventListener('click', function(){
+    if (current === steps.length - 1){ doSubmit(); } else { advance(); }
+  });
+
+  document.addEventListener('visibilitychange', function(){
+    if (startTime === null) return;
+    if (document.hidden){ tabSwitches++; hiddenStart = Date.now(); }
+    else if (hiddenStart){ hiddenMs += Date.now() - hiddenStart; hiddenStart = null; }
+  });
+
+  startBtn.addEventListener('click', function(){
+    var name = document.getElementById('name').value.trim();
+    var email = document.getElementById('email').value.trim();
+    if (!name || !email){ introStatus.textContent = 'Please enter your name and email.'; return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ introStatus.textContent = 'Please enter a valid email address.'; return; }
+    if (!document.getElementById('honesty').checked){ introStatus.textContent = 'Please tick the confirmation box to begin.'; return; }
+    startTime = Date.now();
+    current = 1;
+    showStep(1);
+  });
+
+  function scaleImage(file, maxDim){
+    return new Promise(function(resolve, reject){
+      var reader = new FileReader();
+      reader.onload = function(ev){
+        var img = new Image();
+        img.onload = function(){
+          var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+          var w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+          var canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h;
+          var ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          var dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+          resolve({ data: dataUrl.split(',')[1], type: 'image/jpeg' });
+        };
+        img.onerror = reject; img.src = ev.target.result;
+      };
+      reader.onerror = reject; reader.readAsDataURL(file);
+    });
+  }
+
+  async function doSubmit(){
+    if (SCRIPT_URL.indexOf('PASTE_YOUR') !== -1){ statusMsg.textContent = 'Setup incomplete: not connected to the results sheet.'; return; }
+    var fileInput = document.getElementById('practicalImage');
+    if (!fileInput.files || !fileInput.files[0]){ statusMsg.textContent = 'Please upload your image for the practical task.'; return; }
+    if (!document.getElementById('aiPrompt').value.trim()){ statusMsg.textContent = 'Please add the AI tool and prompt you used.'; return; }
+
+    stopTimer();
+    advanceBtn.disabled = true;
+    statusMsg.textContent = 'Submitting… (uploading your image, please wait)';
+
+    var val = function(n){ return (document.querySelector('input[name="' + n + '"]:checked') || {}).value || ''; };
+    var image;
+    try { image = await scaleImage(fileInput.files[0], 1600); }
+    catch (err){ statusMsg.textContent = 'Could not read your image. Please try a different file (JPG or PNG).'; advanceBtn.disabled = false; return; }
+
+    if (hiddenStart){ hiddenMs += Date.now() - hiddenStart; hiddenStart = null; }
+    var totalSeconds = Math.round((Date.now() - startTime) / 1000);
+
+    var payload = {
+      timestamp: new Date().toISOString(),
+      name: document.getElementById('name').value,
+      email: document.getElementById('email').value,
+      honesty: document.getElementById('honesty').checked ? 'Yes' : 'No',
+      q1: val('q1'), q2: val('q2'), q3: val('q3'), q4: val('q4'), q5: val('q5'),
+      q6: val('q6'), q7: val('q7'), q8: val('q8'), q9: val('q9'), q10: val('q10'),
+      q11: val('q11'), q12: val('q12'), q13: val('q13'), q14: val('q14'),
+      q15: Array.prototype.map.call(document.querySelectorAll('input[name="q15"]:checked'), function(el){ return el.value; }).join(' | '),
+      aiPrompt: document.getElementById('aiPrompt').value,
+      imageData: image.data, imageType: image.type,
+      tabSwitches: tabSwitches, secondsAway: Math.round(hiddenMs / 1000), totalSeconds: totalSeconds
+    };
+
+    try {
+      await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
+      form.classList.add('hidden'); controlBar.classList.remove('show'); successScreen.classList.remove('hidden');
+    } catch (err){ statusMsg.textContent = 'Something went wrong submitting your response. Please try again.'; advanceBtn.disabled = false; }
+  }
+
+  showStep(0);
+</script>
+
+</body>
+</html>
